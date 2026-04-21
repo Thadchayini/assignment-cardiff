@@ -1,0 +1,57 @@
+1. List All Upcoming Events After Today
+//Get all future events
+SELECT event_id, title, event_date, venue, category, price
+FROM Event
+WHERE event_date > CURRENT_DATE
+ORDER BY event_date ASC;
+
+Concepts Used:
+CURRENT_DATE (date function)
+Filtering (WHERE)
+Sorting (ORDER BY)
+
+2. Find All Events at 'National Stadium'
+//Filter events by venue
+SELECT event_id, title, event_date, category, price
+FROM Event
+WHERE venue = 'National Stadium';
+
+3. Show All Bookings with User Names and Event Names
+//Join multiple tables to combine data
+SELECT 
+    u.name AS user_name,
+    b.booking_id,
+    e.title AS event_name,
+    b.status,
+    b.booking_date
+FROM Booking b
+INNER JOIN Users u ON b.user_id = u.user_id
+INNER JOIN Ticket t ON b.booking_id = t.booking_id
+INNER JOIN Event e ON t.event_id = e.event_id
+ORDER BY b.booking_id;
+
+4. Calculate Total Revenue for Each Event
+//Aggregate revenue per event
+SELECT 
+    e.event_id,
+    e.title,
+    SUM(p.amount) AS total_revenue
+FROM Event e
+INNER JOIN Ticket t ON e.event_id = t.event_id
+INNER JOIN Payment p ON t.booking_id = p.booking_id
+GROUP BY e.event_id, e.title
+ORDER BY total_revenue DESC;
+
+5. Top 5 Most Popular Events (By Tickets Sold)
+
+//Get top 5 events by ticket count
+SELECT 
+    e.event_id,
+    e.title,
+    COUNT(t.ticket_id) AS tickets_sold
+FROM Event e
+INNER JOIN Ticket t ON e.event_id = t.event_id
+GROUP BY e.event_id, e.title
+ORDER BY tickets_sold DESC
+LIMIT 5;
+
